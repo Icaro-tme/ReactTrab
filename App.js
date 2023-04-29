@@ -1,56 +1,87 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import Filme from './src/components/Filme/Filme';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import Filme from './src/components/FilmeComponent';
+
+
+const Header = () => {
+  return (
+    <View style={[styles.header]}>
+      <Text style={styles.logo}>LIPSUM.PLEX</Text>
+      <Text style={styles.ad}>
+        Professor, o botão de trailer so funciona ao instalar npm install react-native-webview, e assistindo pelo Android Studio. Não é necessário, mas é interessante.
+</Text>
+    </View>
+  );
+};
 
 export default function App() {
-  let [filmes,setFilmes] = useState([])
-  const [dots, setDots] = useState('.');
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDots(prev => {
-        if (prev.length < 3) {
-          return prev + '.';
-        } else {
-          return '';
-        }
-      });
-    }, 100);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const apiUrl = 'https://api.otaviolube.com/api/filmes?populate=*'
+  const [filmes, setFilmes] = useState([]);
+  const apiUrl = 'https://api.otaviolube.com/api/filmes?populate=*';
 
   useEffect(() => {
     fetch(apiUrl)
       .then(response => response.json())
-      .then(data => {
-        console.log(data)
-        setFilmes(data.data)})
+      .then(data => setFilmes(data.data))
       .catch(error => console.error('Error fetching filmes:', error));
-  },[]);
-
-
+  }, []);
 
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      {filmes.length > 0 ? filmes.map(filme => (
-        <View key={filme.id} style={styles.column}>
-          <Text>{filme.attributes.titulo}</Text>
-        </View>
-      )) : <Text>Carregando{dots}</Text>}
-      <StatusBar style="auto" />
+      <Header />
+      <ScrollView
+        style={styles.scroll}
+        horizontal={true}
+        contentContainerStyle={styles.content}
+      >
+        {filmes.length > 0 ? (
+          filmes.map(filme => <Filme key={filme.id} filme={filme} style={styles.card} />)
+        ) : (
+          <Text>Carregando...</Text>
+        )}
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  ad:{
+    color: '#D8D8D8',
+    fontSize: 12,
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  header: {
+    backgroundColor: '#5865F2',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  logo: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  scroll: {
+    flex: 1,
+  },
+  content: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    paddingHorizontal: 10,
+  },
+  card: {
+    flex: 1,
+    marginHorizontal: 10,
+    marginVertical: 20,
   },
 });
+
