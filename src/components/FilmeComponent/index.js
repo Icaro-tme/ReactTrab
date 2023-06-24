@@ -22,7 +22,11 @@ const Filme = ({ filme }) => {
         uri: posterUrl}} />
       <View style={styles.info}>
         <Text style={styles.title}>{filme.attributes.titulo}</Text>
-        <Text style={styles.summary}>{filme.attributes.sinopse}</Text>
+        <Text style={styles.summary}>
+          {
+            filme.attributes.sinopse.length > 200 ? filme.attributes.sinopse.substring(0, 200)+'...' : filme.attributes.sinopse
+          }
+        </Text>
         <TouchableOpacity style={styles.watchButton} onPress={handleOpenTrailer}>
           <Text style={styles.watchButtonText}>Ver Trailer</Text>
         </TouchableOpacity>
